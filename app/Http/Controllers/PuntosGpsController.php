@@ -39,14 +39,14 @@ class PuntosGpsController extends Controller
             $record_array = explode(',', $record);
             $geo = explode(';', $record_array[5]);
 
-            dd([
+            Puntos_gps::create([
                 "dispositivo"   => $record_array[0],
                 "imei"          => $record_array[1],
                 "tiempo"        => \DateTime::createFromFormat('Hisdmy', $record_array[2])->format('Y-m-d H:i:s'),
                 "placa"         => substr($record_array[4], strpos($record_array[4], ':') + 1, strpos($record_array[4], ';') - strpos($record_array[4], ':') - 1),
                 "version"       => explode(';', $record_array[4])[1],
-                "longitud"      => $geo[2],
-                "latitud"       => $geo[3],
+                "longitud"      => self::sanitizeLatLong($geo[2]),
+                "latitud"       => self::sanitizeLatLong($geo[3]),
                 "fecha_recepcion" => substr($record_array[8], strpos($record_array[8], '[') + 1, strpos($record_array[8], ']') - strpos($record_array[8], '[') - 1),
             ]);
         }
@@ -59,7 +59,7 @@ class PuntosGpsController extends Controller
      */
     public function show(Puntos_gps $puntos_gps)
     {
-        $data = Puntos_gps::all()->toArray();
+        $data = Puntos_gps::all();
         return view("upload_csv.map", compact('data'));
     }
 
@@ -85,5 +85,14 @@ class PuntosGpsController extends Controller
     public function destroy(Puntos_gps $puntos_gps)
     {
         //
+    }
+
+    public function sanitizeLatLong($coordinate) {
+        $cardial = substr($coordinate, 0, 1);
+    
+        $value = (float)substr($coordinate, 1);    
+        $value = ($cardial == 'N' || $cardial == 'E') ? $value : -$value;
+        
+        return intval($value * 1000000);
     }
 }

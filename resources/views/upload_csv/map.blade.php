@@ -11,37 +11,18 @@
 @endsection
 
 @section('scripts')
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script type="text/javascript">
-    let map;
+    let data = @json($data);
 
-   
+    var map = L.map('map').setView([4.624335, -74.063644], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { // Define la capa de base del mapa
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-    async function initMap() {
-        const position = {
-            lat: 4.624335,
-            lng: -74.063644
-        };
-        const {
-            Map
-        } = await google.maps.importLibrary("maps");
-        const {
-            AdvancedMarkerElement
-        } = await google.maps.importLibrary("marker");
-
-        map = new Map(document.getElementById("map"), {
-            zoom: 10,
-            center: position,
-            mapId: "DEMO_MAP_ID",
-        });
-
-        const marker = new AdvancedMarkerElement({
-            map: map,
-            position: position,
-            title: "Uluru",
-        });
-    }
-
-    initMap();
+    data.forEach(function(ubicacion) {
+        L.marker([ubicacion.longitud / 1000000, ubicacion.latitud / 1000000]).addTo(map)
+            .bindPopup(ubicacion.dispositivo);
+    });
 </script>
 @endsection
