@@ -9,28 +9,32 @@
 
 ## Run the project
 
-Para ejecutar el proyecto solamente se instalan los paquetes usando 
+Para ejecutar el proyecto solamente se instalan los paquetes usando  
 
 ```bash
-    composer install
+    composer install && npm i
 ```
 
-luego se installa los paquetes del lado del cliente:
+Luego, recreamos en archivo de environment y agregamos la llave unica para la aplicación:  
 
 ```bash
-    npm install
+    cp .envexample .env && php artisan key:generate
 ```
 
-y por ultimo se levanta el servicio de desarrollo de npm:
+Ahora podemos configurar los valores de conexion a la base de datos  
+
+Despues de configurar estos valores, podemos ejecutar las migraciones:  
+
+```bash
+    php artisan migrate
+```
+
+Para finalizar en una terminal para cada comando:  
+
+```bash
+    php artisan serve
+```
 
 ```bash
     npm run dev
 ```
-
-Tambien se puede hacer a la vez, así:
-
-```bash
-    npm i && npm run dev
-```
-
-Esto se debe hacer en ventanas independientes.
