@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="card" style="height: 600px;">
+    <div class="card" style="height: 800px;">
         <div class="card-header text-center">Mapa con datos</div>
         <div class="card-body " id="map">
         </div>

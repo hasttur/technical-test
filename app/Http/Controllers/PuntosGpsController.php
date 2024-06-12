@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Puntos_gps;
-use Carbon\Carbon;
+
 use Illuminate\Http\Request;
+use App\CsvUploadFile;
+use App\Models\Puntos_gps;
 
 class PuntosGpsController extends Controller
 {
@@ -27,29 +28,13 @@ class PuntosGpsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, CsvUploadFile $csvProcessor)
     {
         $request->validate([
             'upload_csv' => 'required|mimes:csv'
         ]);
 
-        $file = file($request->file('upload_csv'));
-
-        foreach ($file as $record) {
-            $record_array = explode(',', $record);
-            $geo = explode(';', $record_array[5]);
-
-            Puntos_gps::create([
-                "dispositivo"   => $record_array[0],
-                "imei"          => $record_array[1],
-                "tiempo"        => \DateTime::createFromFormat('Hisdmy', $record_array[2])->format('Y-m-d H:i:s'),
-                "placa"         => substr($record_array[4], strpos($record_array[4], ':') + 1, strpos($record_array[4], ';') - strpos($record_array[4], ':') - 1),
-                "version"       => explode(';', $record_array[4])[1],
-                "longitud"      => self::sanitizeLatLong($geo[2]),
-                "latitud"       => self::sanitizeLatLong($geo[3]),
-                "fecha_recepcion" => substr($record_array[8], strpos($record_array[8], '[') + 1, strpos($record_array[8], ']') - strpos($record_array[8], '[') - 1),
-            ]);
-        }
+        $csvProcessor->process($request->file('upload_csv'));
 
         return redirect("/")->with('response', 'Archivo cargado con exito');
     }
@@ -85,14 +70,5 @@ class PuntosGpsController extends Controller
     public function destroy(Puntos_gps $puntos_gps)
     {
         //
-    }
-
-    public function sanitizeLatLong($coordinate) {
-        $cardial = substr($coordinate, 0, 1);
-    
-        $value = (float)substr($coordinate, 1);    
-        $value = ($cardial == 'N' || $cardial == 'E') ? $value : -$value;
-        
-        return intval($value * 1000000);
     }
 }
