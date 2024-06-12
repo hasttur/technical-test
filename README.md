@@ -11,18 +11,26 @@
 
 Para ejecutar el proyecto solamente se instalan los paquetes usando 
 
-> composer install
+```bash
+    composer install
+```
 
 luego se installa los paquetes del lado del cliente:
 
-> npm install
+```bash
+    npm install
+```
 
 y por ultimo se levanta el servicio de desarrollo de npm:
 
-> npm run dev
+```bash
+    npm run dev
+```
 
 Tambien se puede hacer a la vez, así:
 
-> npm i && npm run dev
+```bash
+    npm i && npm run dev
+```
 
 Esto se debe hacer en ventanas independientes.
