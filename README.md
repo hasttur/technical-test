@@ -18,7 +18,7 @@ Para ejecutar el proyecto solamente se instalan los paquetes usando
 Luego, recreamos en archivo de environment y agregamos la llave unica para la aplicación:  
 
 ```bash
-    cp .envexample .env && php artisan key:generate
+    cp .env.example .env && php artisan key:generate
 ```
 
 Ahora podemos configurar los valores de conexion a la base de datos  
